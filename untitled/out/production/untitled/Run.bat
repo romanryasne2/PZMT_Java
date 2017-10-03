@@ -1,0 +1,1 @@
+"java" "-Djava.security.policy=appletviewer.policy" -classpath "gson-2.6.2.jar" sun.applet.AppletViewer Main.html
