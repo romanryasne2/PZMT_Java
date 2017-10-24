@@ -20,7 +20,7 @@ public class Main extends Applet implements ActionListener {
     private boolean Repaint;
 
     public void init() {
-        
+
         Label spinnerLabel = new Label("Count of numbers to sort");
 
         spinner = new JSpinner(new SpinnerNumberModel(10000000, 100, 1000000000, 100000));
@@ -118,7 +118,7 @@ public class Main extends Applet implements ActionListener {
 
         IsBusy = true;
 
-        Worker worker = new Worker(socket.getInetAddress());
+        Worker worker = new Worker(socket.getInetAddress(), socket.getLocalAddress());
 
         worker.WorkerListeners.add(new WorkerListener() {
 

@@ -1,1 +1,1 @@
-"java" "-Djava.security.policy=appletviewer.policy" -classpath "gson-2.6.2.jar" sun.applet.AppletViewer Main.html
+"java" "-Djava.security.policy=appletviewer.policy" -classpath "gson-2.6.2.jar;mssql-jdbc-6.2.2.jre8.jar" sun.applet.AppletViewer Main.html

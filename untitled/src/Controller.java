@@ -14,6 +14,7 @@ public class Controller {
     private boolean WaitForResponse;
     public ArrayList<ControllerListener> ControllerListeners = new ArrayList<ControllerListener>();
     private ServerSocket WorkerSocket;
+    private DbLogger Logger;
 
     private int[] MyArray;
 
@@ -22,6 +23,7 @@ public class Controller {
         Array = array;
         Stations = new ArrayList<Station>(stations);
         WaitForResponse = true;
+        Logger = new DbLogger();
     }
 
     public void StartControl(){
@@ -34,6 +36,8 @@ public class Controller {
         new Thread(){
 
             public void run(){
+
+                Logger.Log(Stations.get(0).Address, "Task is gotten.", Array.length);
 
                 int interval = Array.length/Stations.size();
 
@@ -51,6 +55,9 @@ public class Controller {
                         Socket socket = new Socket(Stations.get(i).Address, 2727);
                         byte[] data = new Gson().toJson(workMessage).getBytes();
                         socket.getOutputStream().write(data, 0, data.length);
+
+                        Logger.IntermediateLog(Stations.get(0).Address, "Part of sorting task is sent to " + socket.getInetAddress().toString() + ".", workMessage.Array.length);
+
                         socket.close();
                     }
                     catch (Exception e){
@@ -109,6 +116,7 @@ public class Controller {
                         continue;
                     }
 
+
                     Station station = null;
 
                     for (Station item : Stations) {
@@ -118,13 +126,6 @@ public class Controller {
                             station = item;
                             break;
                         }
-                    }
-
-                    try {
-                        socket.close();
-                    }
-                    catch(Exception e){
-
                     }
 
                     if (result.Array.length == 0) {
@@ -143,7 +144,16 @@ public class Controller {
                         }
                     } else {
 
+                        Logger.IntermediateLog(Stations.get(0).Address, "Result of part of sorting task is received from " + socket.getInetAddress().toString() + ".", result.Array.length);
+
                         Merge(result.Array);
+                    }
+
+                    try {
+                        socket.close();
+                    }
+                    catch(Exception e){
+
                     }
                 }
             }
@@ -167,6 +177,9 @@ public class Controller {
             catch(Exception e){
 
             }
+            
+            Logger.Log(Stations.get(0).Address, "Task is completed.", MyArray.length);
+
             OnFinish();
         }
     }
@@ -210,6 +223,9 @@ public class Controller {
                     Socket socket = new Socket(station.Address, 2727);
                     byte[] data = new Gson().toJson(workMessage).getBytes();
                     socket.getOutputStream().write(data, 0, data.length);
+
+                    Logger.IntermediateLog(Stations.get(0).Address, "Worker " + socket.getInetAddress().toString() + " must send result to " + workMessage.Address.toString() + ".", -1);
+
                     socket.close();
                 } catch (Exception e) {
                     return;
